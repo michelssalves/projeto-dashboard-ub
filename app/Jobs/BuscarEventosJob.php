@@ -50,7 +50,7 @@ class BuscarEventosJob implements ShouldQueue
                 "data_cadastro_final" => $intervaloFim,
                 "evento_situacao" => $this->eventoMotivoSelecionado
             ];
-            Log::info("body: $body");
+
             Log::info("Consultando API com intervalo: $intervaloInicio - $intervaloFim");
 
             $response = Http::withHeaders([
