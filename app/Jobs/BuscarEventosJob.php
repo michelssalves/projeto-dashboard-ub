@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class BuscarEventosJob implements ShouldQueue
 {
@@ -62,6 +63,13 @@ class BuscarEventosJob implements ShouldQueue
             if ($response->successful()) {
                 $dados = collect($response->json());
                 $eventos = $eventos->merge($dados);
+
+                if ($eventos->isNotEmpty()) {
+                    Cache::put('eventos_resultado', $eventos, now()->addMinutes(30));
+                    Log::info("✅ Eventos salvos no cache com sucesso!");
+                } else {
+                    Log::warning("⚠ Nenhum evento encontrado, cache não atualizado.");
+                }
             } else {
                 Log::error("Erro ao buscar eventos: {$response->status()} - {$response->body()}");
             }

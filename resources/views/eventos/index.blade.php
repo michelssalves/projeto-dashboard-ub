@@ -23,6 +23,10 @@
                     </div>
                     <p class="mt-3">Buscando eventos, por favor aguarde...</p>
                 </div>
+            @elseif (empty(Cache::get('eventos_resultado')))
+                <div class="text-center my-5">
+                    <p class="text-danger">Nenhum evento encontrado para o filtro aplicado.</p>
+                </div>
             @else
                 <div class="table-responsive">
                     <table class="table table-striped">
