@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BuscarEventosJob implements ShouldQueue
 {
@@ -61,12 +62,10 @@ class BuscarEventosJob implements ShouldQueue
             ])->post($this->apiUrl, $body);
 
             if ($response->successful()) {
-                if ($response->successful()) {
-                    $dados = collect($response->json());
-                    Log::info("📩 Resposta da API:", $dados->toArray());
+                $dados = collect($response->json());
+                Log::info("📩 Resposta da API:", $dados->toArray());
 
-                    $eventos = $eventos->merge($dados);
-                }
+                $eventos = $eventos->merge($dados);
             } else {
                 Log::error("Erro ao buscar eventos: {$response->status()} - {$response->body()}");
             }
@@ -74,7 +73,18 @@ class BuscarEventosJob implements ShouldQueue
             $dataInicioLoop->addDays(30);
         }
 
+        // Paginar os eventos (40 por página)
+        $currentPage = request('page', 1);
+        $perPage = 40;
+        $pagedData = new LengthAwarePaginator(
+            $eventos->forPage($currentPage, $perPage),
+            $eventos->count(),
+            $perPage,
+            $currentPage,
+            ['path' => url()->current()]
+        );
+
         Log::info("Total de eventos coletados: " . $eventos->count());
-        \Cache::put('eventos_resultado', $eventos, now()->addMinutes(30)); // Salvar no cache
+        Cache::put('eventos_resultado', $pagedData, now()->addMinutes(30));
     }
 }
