@@ -61,14 +61,11 @@ class BuscarEventosJob implements ShouldQueue
             ])->post($this->apiUrl, $body);
 
             if ($response->successful()) {
-                $dados = collect($response->json());
-                $eventos = $eventos->merge($dados);
+                if ($response->successful()) {
+                    $dados = collect($response->json());
+                    Log::info("📩 Resposta da API:", $dados->toArray());
 
-                if ($eventos->isNotEmpty()) {
-                    Cache::put('eventos_resultado', $eventos, now()->addMinutes(30));
-                    Log::info("✅ Eventos salvos no cache com sucesso!");
-                } else {
-                    Log::warning("⚠ Nenhum evento encontrado, cache não atualizado.");
+                    $eventos = $eventos->merge($dados);
                 }
             } else {
                 Log::error("Erro ao buscar eventos: {$response->status()} - {$response->body()}");
