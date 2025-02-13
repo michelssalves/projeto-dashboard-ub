@@ -44,7 +44,7 @@
                                 <th>Participação</th>
                                 <th>Valor</th>
                                 <th>Sit. Evento</th>
-                                <th>Status</th>
+                                {{-- <th>Status</th> --}}
                                 <th>Associado</th>
                                 <th>Dt. Nascimento</th>
                             </tr>
@@ -67,7 +67,7 @@
                                     <td>{{ $evento['participacao'] ?? 'N/A' }}</td>
                                     <td>R$ {{ number_format($evento['valor_reparo'] ?? 0, 2, ',', '.') }}</td>
                                     <td>{{ $evento['situacao_evento'] ?? 'N/A' }}</td>
-                                    <td>{{ $evento['situacao_evento'] == '2.8 - DESISTêNCIA' ? 'Finalizado' : '' }}
+                                    {{-- <td>{{ $evento['situacao_evento'] == '2.8 - DESISTêNCIA' ? 'Finalizado' : '' }} --}}
                                     </td>
                                     <td>{{ data_get($evento, 'associado.nome', data_get($evento, 'terceiro.nome')) }}
                                     </td>
