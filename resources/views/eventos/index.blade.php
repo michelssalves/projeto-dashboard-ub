@@ -163,7 +163,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($eventosPorSitaucao as $situacao)
+                            @foreach ($eventosPorSituacao as $situacao)
                                 <tr>
                                     <td>{{ $situacao['situacao_evento'] ?? 'N/A' }}</td>
                                     <td>{{ $situacao['quantidade'] }}</td>
